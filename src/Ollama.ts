@@ -3,7 +3,6 @@ import { Editor, Notice, Plugin, requestUrl } from "obsidian";
 import { OllamaSettingTab } from "OllamaSettingTab";
 import { DEFAULT_SETTINGS } from "data/defaultSettings";
 import { OllamaSettings } from "model/OllamaSettings";
-import { count } from "console";
 
 export class Ollama extends Plugin {
   settings: OllamaSettings;
