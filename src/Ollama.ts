@@ -74,9 +74,12 @@ export class Ollama extends Plugin {
         id: kebabCase(command.name),
         name: command.name,
         editorCallback: (editor: Editor) => {
-
           let reader: ReadableStreamDefaultReader;
-          const onKeyDown = () => {
+          
+          const onKeyDown = (event: { key: string; }) => {
+            if (event.key !== 'Escape') {
+              return;
+            }
             console.log("Key pressed")
             reader.cancel();
             document.removeEventListener('keydown', onKeyDown); // remove the event listener
@@ -87,6 +90,9 @@ export class Ollama extends Plugin {
             const endCursorPos = { line: lastLine, ch: lastLineLength };
             editor.setCursor(endCursorPos);
           };
+          
+          // Listen for the Escape key
+          document.addEventListener('keydown', onKeyDown);
 
           const selection = editor.getSelection();
           const text = selection ? selection : editor.getValue();
@@ -109,13 +115,6 @@ export class Ollama extends Plugin {
             }),
           })
             .then(response => {
-              // Listen for the Escape key
-              document.addEventListener('keydown', (event) => {
-                if (event.key === "Escape") {
-                  onKeyDown();
-                }
-              });
-
               if (!response.body) {
                 throw new Error('ReadableStream not yet supported in this browser.');
               }
@@ -161,6 +160,7 @@ export class Ollama extends Plugin {
                       console.error('Error parsing JSON:', e);
                     }
                   }
+                  
                   read(); // Read the next chunk
                 }).catch(error => {
                   console.error('Error while reading the stream', error);
