@@ -3,6 +3,7 @@ import { Editor, Notice, Plugin, requestUrl } from "obsidian";
 import { OllamaSettingTab } from "OllamaSettingTab";
 import { DEFAULT_SETTINGS } from "data/defaultSettings";
 import { OllamaSettings } from "model/OllamaSettings";
+import { count } from "console";
 
 export class Ollama extends Plugin {
   settings: OllamaSettings;
@@ -165,6 +166,7 @@ export class Ollama extends Plugin {
                 }).catch(error => {
                   console.error('Error while reading the stream', error);
                   new Notice(`Error while generating text: ${error.message}`);
+                  document.removeEventListener('keydown', onKeyDown); // remove the event listener
                 })
               }
               function insertContentAtEnd(text: string) {
@@ -184,6 +186,7 @@ export class Ollama extends Plugin {
             }).catch(error => {
             console.error('Error in fetch request:', error);
             new Notice(`Error while generating text: ${error.message}. Is Ollama running?`);
+            document.removeEventListener('keydown', onKeyDown); // remove the event listener
           });
 
         },
